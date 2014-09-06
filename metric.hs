@@ -1,3 +1,12 @@
+module metric
+
+(MetricUnit(..),
+ ImperialUnit(..),
+ Measurement(..),
+ convert)
+
+where
+
 data MetricUnit = Meter | Liter | KiloGram deriving (Show, Eq)
 
 symbol :: MetricUnit -> String
