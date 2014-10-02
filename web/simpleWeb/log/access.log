@@ -1,0 +1,7 @@
+127.0.0.1 - - [02/Oct/2014:09:33:03 +0300] "GET /blah HTTP/1.1" 404 - - "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.124 Safari/537.36"
+127.0.0.1 - - [02/Oct/2014:09:33:06 +0300] "GET /foo HTTP/1.1" 200 - - "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.124 Safari/537.36"
+127.0.0.1 - - [02/Oct/2014:09:34:38 +0300] "GET /static/something.pdf HTTP/1.1" 404 - - "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.124 Safari/537.36"
+127.0.0.1 - - [02/Oct/2014:09:34:42 +0300] "GET /static/hede HTTP/1.1" 404 - - "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.124 Safari/537.36"
+127.0.0.1 - - [02/Oct/2014:09:34:59 +0300] "GET /ssdfsdf HTTP/1.1" 404 - - "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.124 Safari/537.36"
+127.0.0.1 - - [02/Oct/2014:09:35:11 +0300] "GET /ssdfsdf HTTP/1.1" 404 - - "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.124 Safari/537.36"
+127.0.0.1 - - [02/Oct/2014:09:35:20 +0300] "GET /ssdfsdfkjk HTTP/1.1" 404 - - "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.124 Safari/537.36"
