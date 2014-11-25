@@ -14,8 +14,8 @@ The monad of parsers
 > instance Monad Parser where
 >    return v                   =  P (\inp -> [(v,inp)])
 >    p >>= f                    =  P (\inp -> case parse p inp of 
->                                                [] -> []
->                                                [(v, out)] -> parse (f v) inp )
+>                                                [(v, out)] -> parse (f v) out
+>                                                [] -> [])
 > 
 > instance MonadPlus Parser where
 >    mzero                      =  P (\inp -> [])
@@ -36,6 +36,10 @@ Basic parsers
 > 
 > parse                         :: Parser a -> String -> [(a,String)]
 > parse (P p) inp               =  p inp
+
+> parseInt :: Parser Int -> String -> [(Int,String)]
+> parseInt (P p) inp = p inp
+
 
 Choice
 ------
@@ -94,17 +98,26 @@ Derived primitives
 > hede                          :: Int
 > hede = 5                                
 > int                           :: Parser Int
-> int                           =  error "You must implement int"
+> int                           =  (do char '-'
+>                                      n <- nat
+>                                      return (-n))
+>                                  +++ nat
 > 
 > space                         :: Parser ()
 > space                         =  do many (sat isSpace)
 >                                     return ()
 >
 > comment                       :: Parser ()
-> comment                       = error "You must implement comment"
+> comment                       = do string "--"
+>                                    many (sat(/= '\n'))
+>                                    return ()
 >
 > expr                          :: Parser Int
-> expr                          = error "You must implement expr"
+> expr                          = do n <- natural
+>                                    ns <- many
+>                                            (do symbol "-"
+>                                                natural)
+>                                    return (foldl (-) n ns)
 
 Ignoring spacing
 ----------------
