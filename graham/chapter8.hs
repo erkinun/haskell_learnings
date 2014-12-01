@@ -33,23 +33,79 @@ get xs
            '\n' -> return xs
            _ -> get (xs ++ [x])
 
+interact' f 
+          = do input <- getLine'
+               putStrLn1 (f input)
 
+--sequence_1 [] = return ()
+--sequence_1 (m:ms) = m >> \ _ -> sequence_1 ms
 
+sequence_2 [] = return ()
+sequence_2 (m:ms) = (foldl (>>) m ms) >> return ()
 
+sequence_3 ms = foldl (>>) (return ()) ms
 
+sequence_4 [] = return ()
+sequence_4 (m:ms) = m >> sequence_4 ms
 
+sequence_5 [] = return ()
+sequence_5 (m:ms) = m >>= \_ -> sequence_5 ms
 
+--sequence_6 ms = foldr (>>=) (return ()) ms
 
+sequence_7 ms = foldr (>>) (return ()) ms
 
+sequence_8 ms = foldr (>>) (return []) ms
 
+seq1 [] = return []
+seq1 (m:ms) 
+     = m >>= 
+         \ a ->
+           do as <- seq1 ms
+              return (a:as)
 
+--seq2 ms = foldr func (return ()) ms
+--  where 
+--    func :: (Monad m) => m a -> m [a] -> m [a]
+--    func m acc 
+--      = do x <- m 
+--           xs <- acc
+--           return (x:xs)
 
+--seq3 ms = foldr func (return []) ms
+--          where
+--            func :: (Monad m) => m a -> m [a] -> m [a]
+--            func m acc = m : acc
 
+--seq4 [] = return []
+--seq4 (m:ms) = return (a : as)
+--    where
+--        a <- m
+--        as <- seq4 ms
 
+seq5 ms = foldr func (return []) ms
+          where
+            func :: (Monad m) => m a -> m [a] -> m [a]
+            func m acc 
+                 = do x <- m
+                      xs <- acc
+                      return (x:xs)
 
+--dont work
+--seq6 [] = return []
+--seq6 (m:ms) 
+--    = m >> 
+--      \ a -> 
+--          do as <- seq6 ms
+--             return (a:as)
 
+seq7 [] = return []
+seq7 (m:ms) = m >>= \a -> 
+              do as <- seq7 ms
+                 return (a:as)
 
-
-
-
-
+seq8 [] = return []
+seq8 (m:ms) 
+     = do a <- m
+          as <- seq8 ms
+          return (a:as)
