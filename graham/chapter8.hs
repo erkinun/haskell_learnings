@@ -109,3 +109,34 @@ seq8 (m:ms)
      = do a <- m
           as <- seq8 ms
           return (a:as)
+
+monadify chr = putStr chr
+monadify2 = getChar
+
+mapM1 f as = seq1 (map f as)
+
+mapM2 f [] = return []
+mapM2 f (a:as) 
+      = f a >>= \b -> mapM2 f as >>= \bs -> return (b:bs)
+
+--dont work
+mapM3 f as = sequence_2 (map f as)
+
+--dont work
+mapM4 f [] = return []
+mapM4 f (a:as) 
+      = f a >>= \b -> mapM4 f as >> \bs -> return (b:bs)
+
+--dont compile
+--mapM5 f [] = return []
+--mapM5 f (a:as) = 
+--    do 
+--      f a -> b
+--      mapM5 f as -> bs
+--      return (b:bs)
+
+mapM6 f [] = return []
+mapM6 f (a:as)
+      = do b <- f a
+           bs <- mapM6 f as
+           return (b:bs)
