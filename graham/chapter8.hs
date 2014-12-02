@@ -140,3 +140,18 @@ mapM6 f (a:as)
       = do b <- f a
            bs <- mapM6 f as
            return (b:bs)
+
+mapM7 f [] = return []
+mapM7 f (a:as) 
+      = f a >>=
+        \ b ->
+            do bs <- mapM7 f as
+               return (b:bs)
+
+--dont work
+mapM8 f [] = return []
+mapM8 f (a:as) 
+      = f a >>=
+        \ b ->
+            do bs <- mapM8 f as
+               return (bs ++ [b])
