@@ -155,3 +155,20 @@ mapM8 f (a:as)
         \ b ->
             do bs <- mapM8 f as
                return (bs ++ [b])
+
+--predicateMonad
+predMonad :: Monad m => Int -> m Bool
+predMonad m
+          | m < 5 = return True
+          | otherwise = return False
+
+--filter monad
+
+filterMonad _ [] = return []
+filterMonad p (x:xs)
+            = do flag <- p x 
+                 ys <- filterMonad p xs
+                 if flag then return (x:ys) else return ys
+
+liftM1 f m = m >>= \ a -> m >>= \ b -> return (f a)
+liftM2 f m = m >>= \ a -> m >>= \ b -> return (f b)
