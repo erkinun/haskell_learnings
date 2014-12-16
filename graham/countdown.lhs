@@ -59,6 +59,10 @@ Combinatorial functions
 > choices                       :: [a] -> [[a]]
 > choices xs                    =  [zs | ys <- subs xs, zs <- perms ys]
 
+> isChoice [] _ = True
+> isChoice (x:xs) [] = False 
+> isChoice (x:xs) ys = elem x ys && isChoice xs (removeone x ys)
+
 Formalising the problem
 -----------------------
 
