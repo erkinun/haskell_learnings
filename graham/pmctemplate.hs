@@ -60,12 +60,12 @@ par ca cb = Concurrent(\a -> Fork (action ca) (action cb))
 -- ===================================
 
 instance Monad Concurrent where
-    (Concurrent f) >>= g = error "not defined yet"
+    (Concurrent f) >>= g = g $ bind f (\c -> Stop)
     return x = Concurrent (\c -> c x)
 
---bind :: ((a -> Action) -> Action) -> (a -> ((b -> Action) -> Action)) -> ((b -> Action) -> Action)
---bind = let f = \a -> Stop  
---           g = \a ->  
+bind :: ((a -> Action) -> Action) -> (a -> ((b -> Action) -> Action)) -> ((b -> Action) -> Action)
+--bind s f k = s (flip f k)
+bind f g = \k -> f (\x -> g x k)
 
 -- ===================================
 -- Ex. 5
