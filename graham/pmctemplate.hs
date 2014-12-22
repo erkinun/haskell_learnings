@@ -38,7 +38,7 @@ stop = Concurrent (\a -> Stop)
 -- ===================================
 
 atom :: IO a -> Concurrent a
-atom io = Concurrent(\f -> Atom $ io >>= (\a -> return Stop)) 
+atom io = Concurrent(\f -> Atom $ io >>= (\a -> return $ f a)) 
 
 
 -- ===================================
@@ -46,7 +46,7 @@ atom io = Concurrent(\f -> Atom $ io >>= (\a -> return Stop))
 -- ===================================
 
 fork :: Concurrent a -> Concurrent ()
-fork ca = Concurrent(\val -> Fork (action ca) (action ca))
+fork ca = Concurrent(\val -> Fork (action ca) (Stop))
 
 par :: Concurrent a -> Concurrent a -> Concurrent a
 par ca cb = Concurrent(\a -> Fork (action ca) (action cb))
