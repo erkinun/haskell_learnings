@@ -57,7 +57,7 @@ par ca cb = Concurrent(\a -> Fork (action ca) (action cb))
 -- ===================================
 
 instance Monad Concurrent where
-    (Concurrent f) >>= g = g $ bind f (\c -> Stop)
+    (Concurrent s) >>= f = Concurrent(bind s (\a -> (\br -> action (f a))))
     return x = Concurrent (\c -> c x)
 
 bind :: ((a -> Action) -> Action) -> (a -> ((b -> Action) -> Action)) -> ((b -> Action) -> Action)
@@ -69,7 +69,14 @@ bind f g = \k -> f (\x -> g x k)
 -- ===================================
 
 roundRobin :: [Action] -> IO ()
-roundRobin = error "You have to implement roundRobin"
+roundRobin [] = return ()
+roundRobin (a:as) = case a of 
+                        Atom ioc -> do
+                                        c <- ioc
+                                        roundRobin (as ++ [action (Concurrent(\hede -> c))])
+                                        return ()
+                        Fork ac1 ac2 -> roundRobin (as ++ [ac1,ac2])
+                        Stop -> roundRobin as
 
 -- ===================================
 -- Tests
