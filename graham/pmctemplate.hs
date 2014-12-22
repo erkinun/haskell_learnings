@@ -19,7 +19,10 @@ instance Show Action where
 -- ===================================
 
 action :: Concurrent a -> Action
-action = error "You have to implement action"
+action (Concurrent f) = actionInner f 
+
+actionInner :: ((a -> Action) -> Action) -> Action 
+actionInner f = f (\a -> Stop)
 
 
 -- ===================================
@@ -27,7 +30,7 @@ action = error "You have to implement action"
 -- ===================================
 
 stop :: Concurrent a
-stop = error "You have to implement stop"
+stop = Concurrent (\a -> Stop)
 
 
 -- ===================================
@@ -35,7 +38,7 @@ stop = error "You have to implement stop"
 -- ===================================
 
 atom :: IO a -> Concurrent a
-atom = error "You have to implement atom"
+atom io = Concurrent(\f -> Atom $ io >>= (\a -> return Stop)) 
 
 
 -- ===================================
@@ -43,10 +46,10 @@ atom = error "You have to implement atom"
 -- ===================================
 
 fork :: Concurrent a -> Concurrent ()
-fork = error "You have to implement fork"
+fork ca = Concurrent(\val -> Fork (action ca) (action ca))
 
 par :: Concurrent a -> Concurrent a -> Concurrent a
-par = error "You have to implement par"
+par ca cb = Concurrent(\a -> Fork (action ca) (action cb))
 
 
 -- ===================================
@@ -54,9 +57,12 @@ par = error "You have to implement par"
 -- ===================================
 
 instance Monad Concurrent where
-    (Concurrent f) >>= g = error "You have to implement >>="
+    (Concurrent f) >>= g = g $ bind f (\c -> Stop)
     return x = Concurrent (\c -> c x)
 
+bind :: ((a -> Action) -> Action) -> (a -> ((b -> Action) -> Action)) -> ((b -> Action) -> Action)
+--bind s f k = s (flip f k)
+bind f g = \k -> f (\x -> g x k)
 
 -- ===================================
 -- Ex. 5
