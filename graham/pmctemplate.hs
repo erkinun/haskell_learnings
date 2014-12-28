@@ -4,9 +4,6 @@ import Control.Monad
 
 data Concurrent a = Concurrent ((a -> Action) -> Action)
 
---instance Show (Concurrent a) where 
---    show (Concurrent f) = "concurrent a"
-
 data Action 
     = Atom (IO Action)
     | Fork Action Action
@@ -41,7 +38,7 @@ stop = Concurrent (\a -> Stop)
 -- ===================================
 
 atom :: IO a -> Concurrent a
-atom io = Concurrent(\f -> Atom $ io >>= (\a -> return Stop)) 
+atom io = Concurrent(\f -> Atom $ io >>= (\a -> return $ f a)) 
 
 
 -- ===================================
@@ -49,7 +46,7 @@ atom io = Concurrent(\f -> Atom $ io >>= (\a -> return Stop))
 -- ===================================
 
 fork :: Concurrent a -> Concurrent ()
-fork ca = Concurrent(\val -> Fork (action ca) (action ca))
+fork ca = Concurrent(\val -> Fork (action ca) (Stop))
 
 par :: Concurrent a -> Concurrent a -> Concurrent a
 par ca cb = Concurrent(\a -> Fork (action ca) (action cb))
@@ -60,7 +57,7 @@ par ca cb = Concurrent(\a -> Fork (action ca) (action cb))
 -- ===================================
 
 instance Monad Concurrent where
-    (Concurrent f) >>= g = error "hede"
+    (Concurrent s) >>= f = Concurrent(bind s (\a -> (\br -> action (f a))))
     return x = Concurrent (\c -> c x)
 
 bind :: ((a -> Action) -> Action) -> (a -> ((b -> Action) -> Action)) -> ((b -> Action) -> Action)
@@ -72,7 +69,14 @@ bind f g = \k -> f (\x -> g x k)
 -- ===================================
 
 roundRobin :: [Action] -> IO ()
-roundRobin = error "You have to implement roundRobin"
+roundRobin [] = return ()
+roundRobin (a:as) = case a of 
+                        Atom ioc -> do
+                                        c <- ioc
+                                        roundRobin (as ++ [action (Concurrent(\hede -> c))])
+                                        return ()
+                        Fork ac1 ac2 -> roundRobin (as ++ [ac1,ac2])
+                        Stop -> roundRobin as
 
 -- ===================================
 -- Tests
