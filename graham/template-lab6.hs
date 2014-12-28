@@ -23,7 +23,13 @@ ex2 = root . head . children . head . children . head . drop 2 $ children xs
 -- ===================================
 
 size :: Rose a -> Int
-size = error "you have to implement size"
+size (a :> []) = 1
+size (a :> xs) = 1 + innersize xs
+
+innersize :: [Rose a] -> Int
+innersize [] = 0
+innersize [x] = size x 
+innersize (x:xs) = size x + innersize xs
 
 leaves :: Rose a -> Int
 leaves = error "you have to implement leaves"
