@@ -60,7 +60,7 @@ par ca cb = Concurrent(\a -> Fork (action ca) (action cb))
 -- ===================================
 
 instance Monad Concurrent where
-    (Concurrent f) >>= g = g $ bind f (\c -> Stop)
+    (Concurrent f) >>= g = error "hede"
     return x = Concurrent (\c -> c x)
 
 bind :: ((a -> Action) -> Action) -> (a -> ((b -> Action) -> Action)) -> ((b -> Action) -> Action)
