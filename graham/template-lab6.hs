@@ -32,7 +32,13 @@ innersize [x] = size x
 innersize (x:xs) = size x + innersize xs
 
 leaves :: Rose a -> Int
-leaves = error "you have to implement leaves"
+leaves (a :> []) = 1
+leaves (a :> xs) = innerLeaves xs
+
+innerLeaves :: [Rose a] -> Int
+innerLeaves [] = 0
+innerLeaves [x] = leaves x
+innerLeaves (x:xs) = leaves x + innerLeaves xs
 
 ex7 = (*) (leaves . head . children . head . children $ xs) (product . map size . children . head . drop 2 . children $ xs)
 
@@ -41,7 +47,11 @@ ex7 = (*) (leaves . head . children . head . children $ xs) (product . map size 
 -- ===================================
 
 instance Functor Rose where
-  fmap = error "you have to implement fmap for Rose"
+  fmap f (a :> xs) = (f a :> innerFmap f xs)
+
+innerFmap :: (a -> b) -> [Rose a] -> [Rose b]
+innerFmap f [] = []
+innerFmap f (x:xs) = (fmap f x) : innerFmap f xs
 
 ex10 = round . root . head . children . fmap (\x -> if x > 0.5 then x else 0) $ fmap (\x -> sin(fromIntegral x)) xs
 
