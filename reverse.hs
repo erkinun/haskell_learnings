@@ -15,3 +15,7 @@ main = do
   
 reverseWords :: String -> String  
 reverseWords line  = unwords . map reverse . words $ line
+
+reverseList :: [a] -> [a]
+reverseList [] = []
+reverseList (x:xs) = (reverseList xs) ++ [x]
